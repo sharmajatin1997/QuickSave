@@ -95,6 +95,8 @@ class StringHelper {
   static String get termsDesc => _get('termsDesc');
   static String get privacy => _get('privacy');
   static String get privacyDesc => _get('privacyDesc');
+  static String get termsContent => _get('termsContent');
+  static String get privacyContent => _get('privacyContent');
 
   // FAQ
   static String get faqQ1 => _get('faqQ1');
@@ -178,4 +180,11 @@ class StringHelper {
   static String get dragBrand => _get('dragBrand');
   static String get typeWatermark => _get('typeWatermark');
   static String get loadingMedia => _get('loadingMedia');
+  static String get drawBoxFirst => _get('drawBoxFirst');
+  static String get erasedSavedSuccess => _get('erasedSavedSuccess');
+  static String get processingFailed => _get('processingFailed');
+  static String get unsupportedFileType => _get('unsupportedFileType');
+  static String get videoSavedSuccess => _get('videoSavedSuccess');
+  static String get failedApplyWatermark => _get('failedApplyWatermark');
+  static String get processingWait => _get('processingWait');
 }

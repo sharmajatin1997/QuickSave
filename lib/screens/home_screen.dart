@@ -92,18 +92,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: Border(bottom: BorderSide(color: borderColor, width: 3)),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     buildCircleIcon(Icons.settings, () => context.push('/settings')).animate().scale(delay: 100.ms),
-                     Text(
-                      StringHelper.appName,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -1,
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          StringHelper.appName,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: -1,
+                          ),
+                        ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2),
                       ),
-                    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2),
+                    ),
                     buildCircleIcon(Icons.history, () => context.push('/history')).animate().scale(delay: 200.ms),
                   ],
                 ),
@@ -141,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: _controller.text.isEmpty ? NeuColors.secondary : const Color(0xFFFFEBEE),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   _controller.text.isEmpty ? Icons.paste : Icons.clear_all_rounded,
@@ -163,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? const CircularProgressIndicator(color: NeuColors.secondary)
                                 : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(Icons.download, size: 20),
                                 const SizedBox(width: 8),
@@ -179,13 +185,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         .animate().fadeIn(delay: 700.ms),
                     const SizedBox(height: 12),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildPlatformItem(StringHelper.instagram, Icons.camera_rounded, const Color(0xFFFF80AB), textColor, 0),
-                        _buildPlatformItem(StringHelper.facebook, Icons.facebook_rounded, const Color(0xFF82B1FF), textColor, 100),
-                        _buildPlatformItem(StringHelper.tiktok, Icons.music_note, const Color(0xFF5E5D5D), textColor, 200),
-                        _buildPlatformItem(StringHelper.youtube, Icons.play_arrow_rounded, const Color(0xFFFF5252), textColor, 300),
-                        _buildPlatformItem(StringHelper.other, Icons.grid_view_rounded, const Color(0xFFB2FF59), textColor, 400),
+                        Expanded(child: _buildPlatformItem(StringHelper.instagram, Icons.camera_rounded, const Color(0xFFFF80AB), textColor, 0)),
+                        Expanded(child: _buildPlatformItem(StringHelper.facebook, Icons.facebook_rounded, const Color(0xFF82B1FF), textColor, 100)),
+                        Expanded(child: _buildPlatformItem(StringHelper.tiktok, Icons.music_note, const Color(0xFF5E5D5D), textColor, 200)),
+                        Expanded(child: _buildPlatformItem(StringHelper.youtube, Icons.play_arrow_rounded, const Color(0xFFFF5252), textColor, 300)),
+                        Expanded(child: _buildPlatformItem(StringHelper.other, Icons.grid_view_rounded, const Color(0xFFB2FF59), textColor, 400)),
                       ],
                     ),
 
@@ -242,9 +247,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(icon, color: Colors.black, size: 28),
           ).animate().scale(curve: Curves.elasticOut, duration: 600.ms, delay: (800 + delay).ms),
           const SizedBox(height: 8),
-          Text(
-            name,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: textColor),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: textColor),
+            ),
           ).animate().fadeIn(delay: (1000 + delay).ms),
         ],
       ),

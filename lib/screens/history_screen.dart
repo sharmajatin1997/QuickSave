@@ -127,16 +127,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                                 ),
                                               ),
                                               if (item.actionType != null)
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    color: _getTagColor(item.actionType!),
-                                                    borderRadius: BorderRadius.circular(4),
-                                                    border: Border.all(color: Colors.black, width: 1),
-                                                  ),
-                                                  child: Text(
-                                                    item.actionType!.toUpperCase(),
-                                                    style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 8.0),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      color: _getTagColor(item.actionType!),
+                                                      borderRadius: BorderRadius.circular(4),
+                                                      border: Border.all(color: Colors.black, width: 1),
+                                                    ),
+                                                    child: Text(
+                                                      item.actionType!.toUpperCase(),
+                                                      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black),
+                                                    ),
                                                   ),
                                                 ),
                                             ],
@@ -150,9 +153,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                                 color: Colors.grey,
                                               ),
                                               const SizedBox(width: 4),
-                                              Text(
-                                                '${item.audioOnly ? StringHelper.mp3 : StringHelper.video} · ${date.day}/${date.month}/${date.year}',
-                                                style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                                              Expanded(
+                                                child: Text(
+                                                  '${item.audioOnly ? StringHelper.mp3 : StringHelper.video} · ${date.day}/${date.month}/${date.year}',
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                                                ),
                                               ),
                                             ],
                                           ),

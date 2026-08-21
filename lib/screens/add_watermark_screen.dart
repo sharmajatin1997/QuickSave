@@ -141,7 +141,7 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
         ));
         if (mounted) {
           setState(() => _isProcessing = false);
-          showNeuDialog(context: context, title: "Success", body: "Video saved successfully!", onConfirm: () {
+          showNeuDialog(context: context, title: StringHelper.success, body: StringHelper.videoSavedSuccess, onConfirm: () {
             Navigator.pop(context);
             Navigator.pop(context);
           });
@@ -149,7 +149,7 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
       } else {
         if (mounted) {
           setState(() => _isProcessing = false);
-          showNeuDialog(context: context, title: "Error", body: "Failed to apply watermark.");
+          showNeuDialog(context: context, title: StringHelper.error, body: StringHelper.failedApplyWatermark);
         }
       }
     } catch (e) {
@@ -179,7 +179,7 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
           canPop: !_isProcessing,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop && _isProcessing) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Processing... Please wait.")));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(StringHelper.processingWait)));
             }
           },
           child: Scaffold(
@@ -358,6 +358,6 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
   }
 
   Widget _typeToggle(String label, IconData icon, bool active, VoidCallback onTap) {
-    return Expanded(child: GestureDetector(onTap: onTap, child: NeuContainer(padding: const EdgeInsets.symmetric(vertical: 12), color: active ? NeuColors.secondary : null, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(label, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12))]))));
+    return Expanded(child: GestureDetector(onTap: onTap, child: NeuContainer(padding: const EdgeInsets.symmetric(vertical: 12), color: active ? NeuColors.secondary : null, child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [Icon(icon, size: 18), const SizedBox(width: 8), Flexible(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis))]))));
   }
 }

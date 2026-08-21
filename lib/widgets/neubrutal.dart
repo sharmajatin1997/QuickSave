@@ -108,7 +108,10 @@ class NeuButton extends StatelessWidget {
                   fontSize: 16,
                   fontFamily: Theme.of(context).textTheme.bodyLarge?.fontFamily,
                 ),
-                child: child,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -176,10 +179,10 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color borderColor = isDark ? Colors.white : Colors.black;
     return Container(
-      height: Platform.isAndroid?100:120,
+      height: preferredSize.height,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
-        bottom:Platform.isAndroid?0:10 ,
+        bottom: Platform.isAndroid ? 0 : 10,
         left: 24,
         right: 24,
       ),
@@ -192,20 +195,26 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
           leading ?? const SizedBox(width: 44),
           Expanded(
             child: Center(
-              child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: fontSize ?? 28,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  letterSpacing: -1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: fontSize ?? 28,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: -1,
+                  ),
                 ),
               ),
             ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: actions ?? [const SizedBox(width: 44)],
           ),
         ],
@@ -214,7 +223,7 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => Size.fromHeight(Platform.isAndroid ? 100 : 120);
 }
 
 void showNeuDialog({

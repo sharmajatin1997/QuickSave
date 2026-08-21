@@ -176,6 +176,7 @@ class _ConvertFormatScreenState extends State<ConvertFormatScreen> {
                   color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(_isAudioMode ? Icons.library_music_rounded : Icons.video_library_rounded, color: isDark ? Colors.white : Colors.black),
                       const SizedBox(width: 12),
@@ -267,9 +268,12 @@ class _ConvertFormatScreenState extends State<ConvertFormatScreen> {
           children: [
             Icon(icon, size: 32, color: Colors.black),
             const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Colors.black),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Colors.black),
+              ),
             ),
           ],
         ),

@@ -166,6 +166,7 @@ class _PlatformDownloadScreenState extends State<PlatformDownloadScreen> {
                         color: _controller.text.isEmpty ? NeuColors.secondary : const Color(0xFFFFEBEE),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               _controller.text.isEmpty ? Icons.paste : Icons.clear_all_rounded,
@@ -189,6 +190,7 @@ class _PlatformDownloadScreenState extends State<PlatformDownloadScreen> {
                             ? const CircularProgressIndicator(color: NeuColors.secondary)
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   const Icon(Icons.download, size: 20, color: Colors.black),
                                   const SizedBox(width: 8),

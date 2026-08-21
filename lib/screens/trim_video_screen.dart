@@ -397,7 +397,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(StringHelper.startTimeLabel, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey)),
+                            Text(StringHelper.startTimeLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey)),
                             const SizedBox(height: 8),
                             NeuTextField(
                               controller: _startController,
@@ -421,7 +421,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(StringHelper.endTimeLabel, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey)),
+                            Text(StringHelper.endTimeLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey)),
                             const SizedBox(height: 8),
                             NeuTextField(
                               controller: _endController,

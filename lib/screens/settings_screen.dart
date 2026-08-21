@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                   StringHelper.termsDesc,
                   Icons.description_outlined,
                   const Color(0xFFF3E5F5),
-                  () => _showContent(context, StringHelper.terms, _termsText),
+                  () => _showContent(context, StringHelper.terms, StringHelper.termsContent),
                 ),
                 _buildSettingsItem(
                   context,
@@ -86,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
                   StringHelper.privacyDesc,
                   Icons.security_outlined,
                   const Color(0xFFE8F5E9),
-                  () => _showContent(context, StringHelper.privacy, _privacyText),
+                  () => _showContent(context, StringHelper.privacy, StringHelper.privacyContent),
                 ),
                 const SizedBox(height: 40),
                 Center(
@@ -316,44 +316,4 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
-
-  static final String _termsText = """
-1. Introduction
-Welcome to ${StringHelper.appName}. By accessing and using our application, you agree to comply with and be bound by the following terms and conditions. If you do not agree, please do not use the service.
-
-2. Description of Service
-${StringHelper.appName} is a utility tool designed to help users download video and audio from supported platforms, trim videos, convert media formats, and remove unwanted elements using Magic Eraser.
-
-3. User Responsibility & Copyright
-Users are solely responsible for the media they download or edit. You must ensure you have the legal right or permission from the content owner before downloading copyrighted material. ${StringHelper.appName} does not host any content and acts only as a technical intermediary.
-
-4. Usage Restrictions
-You may not use this app for any illegal purposes or to facilitate copyright infringement. Commercial use of the downloaded content without proper authorization is strictly prohibited.
-
-5. Limitation of Liability
-${StringHelper.appName} is provided "as is" without any warranties. We are not liable for any technical failures, data loss, or legal issues arising from your use of the application.
-
-6. Changes to Terms
-We reserve the right to modify these terms at any time. Continued use of the app constitutes acceptance of the updated terms.
-""";
-
-  static final String _privacyText = """
-1. Data Collection
-Your privacy is our priority. ${StringHelper.appName} does not require an account, and we do not collect, store, or sell any personal information such as your name, email, or location.
-
-2. On-Device Processing
-Most features, including Video Trimming, Format Conversion, and local history management, are processed directly on your mobile device. Your media files remain private to you.
-
-3. Temporary Server Usage
-When you download a video via a link, our server processes the request to fetch the media file. This data is processed temporarily and is not stored permanently on our servers after the download is completed.
-
-4. Permissions
-We request access to your Photo Gallery and Internal Storage only for the purpose of saving downloaded media and allowing you to select files for editing (Trimming, Converting, etc.).
-
-5. Third-Party Links
-Our app may contain links to external sites (like YouTube, Instagram). We are not responsible for the privacy practices or content of these third-party platforms.
-
-6. Consent
-By using ${StringHelper.appName}, you consent to our Privacy Policy.
-""";
 }

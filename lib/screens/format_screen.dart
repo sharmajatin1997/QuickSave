@@ -186,6 +186,8 @@ class _FormatScreenState extends State<FormatScreen> {
                         ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
                         Text(
                           'from ${widget.info.extractor}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
                         ).animate().fadeIn(delay: 300.ms),
                         const SizedBox(height: 24),

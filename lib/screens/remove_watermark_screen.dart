@@ -56,7 +56,7 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
           showNeuDialog(
             context: context, 
             title: StringHelper.error, 
-            body: "Unsupported file type. Please select an Image or Video.",
+            body: StringHelper.unsupportedFileType,
           );
         }
         return;
@@ -95,7 +95,7 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
 
   Future<void> _handleRemoveWatermark() async {
     if (_selectedFile == null || _selectionRect == null) {
-      showNeuDialog(context: context, title: StringHelper.error, body: "Please draw a box over the area first.");
+      showNeuDialog(context: context, title: StringHelper.error, body: StringHelper.drawBoxFirst);
       return;
     }
 
@@ -172,7 +172,7 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
             showNeuDialog(
               context: context,
               title: StringHelper.success,
-              body: "Erased successfully and saved to gallery!",
+              body: StringHelper.erasedSavedSuccess,
               onConfirm: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -182,7 +182,7 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
         } else {
           if (mounted) {
             setState(() => _isProcessing = false);
-            showNeuDialog(context: context, title: StringHelper.error, body: "Processing failed. Try again.");
+            showNeuDialog(context: context, title: StringHelper.error, body: StringHelper.processingFailed);
           }
         }
       });
@@ -257,6 +257,7 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
             color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.perm_media_rounded, color: Colors.black),
                 const SizedBox(width: 12),
@@ -426,8 +427,9 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
                   : Text(StringHelper.tagEraser.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
               ),
               const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 20,
                 children: [
                   TextButton(
                     onPressed: () {
@@ -440,7 +442,6 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
                     }, 
                     child: Text(StringHelper.clearSelection, style: const TextStyle(color: NeuColors.primary, fontWeight: FontWeight.bold))
                   ),
-                  const SizedBox(width: 20),
                   TextButton(
                     onPressed: _pickMedia, 
                     child: Text(StringHelper.changeVideo, style: TextStyle(color: textColor, fontWeight: FontWeight.bold))
