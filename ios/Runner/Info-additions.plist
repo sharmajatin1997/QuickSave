@@ -1,0 +1,15 @@
+<!--
+  Add these keys to ios/Runner/Info.plist (inside the outer <dict>)
+  — merge into the file that `flutter create .` generates.
+-->
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>MyDownloader saves your downloaded videos to your photo library.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>MyDownloader needs access to your photo library to save downloaded videos.</string>
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <!-- Allows http:// connections to your local backend during
+         development. Remove once your backend is https:// in production. -->
+</dict>
