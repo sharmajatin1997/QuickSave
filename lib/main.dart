@@ -13,6 +13,7 @@ import 'screens/trim_video_screen.dart';
 import 'screens/convert_format_screen.dart';
 import 'screens/remove_watermark_screen.dart';
 import 'screens/remove_audio_screen.dart';
+import 'screens/extract_mp3_screen.dart';
 import 'screens/add_watermark_screen.dart';
 import 'screens/compress_screen.dart';
 import 'screens/splash_screen.dart';
@@ -50,6 +51,7 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/convert', builder: (context, state) => const ConvertFormatScreen()),
     GoRoute(path: '/remove-watermark', builder: (context, state) => const RemoveWatermarkScreen()),
     GoRoute(path: '/remove-audio', builder: (context, state) => const RemoveAudioScreen()),
+    GoRoute(path: '/extract-mp3', builder: (context, state) => const ExtractMp3Screen()),
     GoRoute(path: '/add-watermark', builder: (context, state) => const AddWatermarkScreen()),
     GoRoute(path: '/compress', builder: (context, state) => const CompressScreen()),
     GoRoute(
