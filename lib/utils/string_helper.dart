@@ -52,6 +52,18 @@ class StringHelper {
   static String get muteVideoDesc => _get('muteVideoDesc');
   static String get extractMp3 => _get('extractMp3');
   static String get extractMp3Desc => _get('extractMp3Desc');
+  static String get compressTitle => _get('compressTitle');
+  static String get selectFileToCompress => _get('selectFileToCompress');
+  static String get compressDescLong => _get('compressDescLong');
+  static String get lowQuality => _get('lowQuality');
+  static String get mediumQuality => _get('mediumQuality');
+  static String get highQuality => _get('highQuality');
+  static String get compressedSavedSuccess => _get('compressedSavedSuccess');
+  static String get compressingFile => _get('compressingFile');
+  static String get originalSize => _get('originalSize');
+  static String get compressedSize => _get('compressedSize');
+  static String get compressionLevel => _get('compressionLevel');
+  static String get selectFile => _get('selectFile');
 
   // Trim Screen
   static String get chooseSource => _get('chooseSource');

@@ -42,7 +42,7 @@ class ToolsScreen extends StatelessWidget {
                     _buildToolCard(StringHelper.addWatermark, StringHelper.addWatermarkDesc, Icons.branding_watermark_rounded, const Color(0xFFF3E5F5), textColor, 100, onTap: () => context.push('/add-watermark')),
                     _buildToolCard(StringHelper.trimVideo, StringHelper.trimVideoDesc, Icons.content_cut, const Color(0xFFE8F5E9), textColor, 200, onTap: () => context.push('/trim')),
                     _buildToolCard(StringHelper.convertFormat, StringHelper.convertFormatDesc, Icons.swap_horiz, const Color(0xFFFFF3E0), textColor, 300, onTap: () => context.push('/convert')),
-                    _buildToolCard(StringHelper.compress, StringHelper.compressDesc, Icons.compress, const Color(0xFFF1F8E9), textColor, 400),
+                    _buildToolCard(StringHelper.compress, StringHelper.compressDesc, Icons.compress, const Color(0xFFF1F8E9), textColor, 400, onTap: () => context.push('/compress')),
                     _buildToolCard(StringHelper.removeAudio, StringHelper.removeAudioDesc, Icons.volume_off, const Color(0xFFFFEBEE), textColor, 500),
                     _buildToolCard(StringHelper.extractMp3, StringHelper.extractMp3Desc, Icons.music_note, const Color(0xFFE1F5FE), textColor, 600),
                   ],

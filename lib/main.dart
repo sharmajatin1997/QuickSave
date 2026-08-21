@@ -13,6 +13,7 @@ import 'screens/trim_video_screen.dart';
 import 'screens/convert_format_screen.dart';
 import 'screens/remove_watermark_screen.dart';
 import 'screens/add_watermark_screen.dart';
+import 'screens/compress_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/language_screen.dart';
 import 'utils/string_helper.dart';
@@ -48,6 +49,7 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/convert', builder: (context, state) => const ConvertFormatScreen()),
     GoRoute(path: '/remove-watermark', builder: (context, state) => const RemoveWatermarkScreen()),
     GoRoute(path: '/add-watermark', builder: (context, state) => const AddWatermarkScreen()),
+    GoRoute(path: '/compress', builder: (context, state) => const CompressScreen()),
     GoRoute(
       path: '/platform',
       builder: (context, state) {
