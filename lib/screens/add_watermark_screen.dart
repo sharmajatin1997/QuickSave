@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
@@ -143,7 +144,7 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
           setState(() => _isProcessing = false);
           showNeuDialog(context: context, title: StringHelper.success, body: StringHelper.videoSavedSuccess, onConfirm: () {
             Navigator.pop(context);
-            Navigator.pop(context);
+            context.push('/history');
           });
         }
       } else {

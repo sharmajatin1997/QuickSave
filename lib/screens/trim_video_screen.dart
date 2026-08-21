@@ -181,7 +181,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
             body: StringHelper.trimmedSavedSuccess,
             onConfirm: () {
               Navigator.pop(context);
-              context.go('/');
+              context.push('/history');
             },
           );
         }

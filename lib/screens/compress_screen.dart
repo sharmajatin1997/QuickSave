@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -139,7 +140,10 @@ class _CompressScreenState extends State<CompressScreen> {
               body: "${StringHelper.compressedSavedSuccess}\n\n"
                     "${StringHelper.originalSize}: ${_getFileSize(originalSize)}\n"
                     "${StringHelper.compressedSize}: ${_getFileSize(newSize)}",
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () {
+                Navigator.pop(context);
+                context.push('/history');
+              },
             );
           }
         } else {

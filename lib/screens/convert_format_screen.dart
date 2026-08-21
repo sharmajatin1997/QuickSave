@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
@@ -88,7 +89,10 @@ class _ConvertFormatScreenState extends State<ConvertFormatScreen> {
               context: context,
               title: StringHelper.success,
               body: StringHelper.conversionSuccess,
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () {
+                Navigator.pop(context);
+                context.push('/history');
+              },
             );
           }
         } else {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
@@ -121,7 +122,7 @@ class _ExtractMp3ScreenState extends State<ExtractMp3Screen> {
               body: StringHelper.audioExtractedSuccess,
               onConfirm: () {
                 Navigator.pop(context);
-                Navigator.pop(context); // Go back to tools
+                context.push('/history');
               },
             );
           }

@@ -131,7 +131,10 @@ class _FormatScreenState extends State<FormatScreen> {
         const SizedBox(width: 12),
         Expanded(
           child: NeuButton(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              context.push('/history');
+            },
             color: NeuColors.accent,
             height: 48,
             child:  Text(StringHelper.ok, style: const TextStyle(fontSize: 14)),
