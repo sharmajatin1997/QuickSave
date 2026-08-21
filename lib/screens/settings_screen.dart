@@ -6,6 +6,8 @@ import '../utils/string_helper.dart';
 import '../utils/theme_notifier.dart';
 import '../utils/language_notifier.dart';
 
+import '../widgets/responsive_layout.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -13,93 +15,105 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return ValueListenableBuilder<String>(
-      valueListenable: LanguageNotifier.languageCode,
-      builder: (context, lang, _) {
-        return Scaffold(
-          backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF0F0F0),
-          appBar: NeuAppBar(
-            title: StringHelper.settings,
-            leading: buildCircleIcon(Icons.arrow_back, () => Navigator.pop(context)),
+    return Scaffold(
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF0F0F0),
+      appBar: NeuAppBar(
+        title: StringHelper.settings,
+        leading: buildCircleIcon(Icons.arrow_back, () => Navigator.pop(context)),
+      ),
+      body: const SettingsBody(),
+    );
+  }
+}
+
+class SettingsBody extends StatelessWidget {
+  const SettingsBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(StringHelper.preferences),
+          const SizedBox(height: 12),
+          
+          // Theme Option
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: ThemeNotifier.themeMode,
+            builder: (context, mode, child) {
+              String themeLabel = StringHelper.lightMode;
+              if (mode == ThemeMode.dark) themeLabel = StringHelper.darkMode;
+              if (mode == ThemeMode.system) themeLabel = StringHelper.systemDefault;
+
+              return _buildSettingsItem(
+                context,
+                StringHelper.theme,
+                themeLabel,
+                Icons.palette_outlined,
+                const Color(0xFFE8EAF6),
+                () => _showThemePicker(context),
+              );
+            },
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionTitle(StringHelper.preferences),
-                const SizedBox(height: 12),
-                
-                // Theme Option
-                ValueListenableBuilder<ThemeMode>(
-                  valueListenable: ThemeNotifier.themeMode,
-                  builder: (context, mode, child) {
-                    String themeLabel = StringHelper.lightMode;
-                    if (mode == ThemeMode.dark) themeLabel = StringHelper.darkMode;
-                    if (mode == ThemeMode.system) themeLabel = StringHelper.systemDefault;
 
-                    return _buildSettingsItem(
-                      context,
-                      StringHelper.theme,
-                      themeLabel,
-                      Icons.palette_outlined,
-                      const Color(0xFFE8EAF6),
-                      () => _showThemePicker(context),
-                    );
-                  },
-                ),
-
-                _buildSettingsItem(
-                  context,
-                  StringHelper.language,
-                  StringHelper.languageDefault,
-                  Icons.language,
-                  const Color(0xFFFFF9C4),
-                  () => context.push('/language'),
-                ),
-                
-                const SizedBox(height: 32),
-                _buildSectionTitle(StringHelper.support),
-                const SizedBox(height: 12),
-                _buildSettingsItem(
-                  context,
-                  StringHelper.faq,
-                  StringHelper.faqDesc,
-                  Icons.help_outline,
-                  const Color(0xFFE1F5FE),
-                  () => _showFAQ(context),
-                ),
-                const SizedBox(height: 32),
-                _buildSectionTitle(StringHelper.legal),
-                const SizedBox(height: 12),
-                _buildSettingsItem(
-                  context,
-                  StringHelper.terms,
-                  StringHelper.termsDesc,
-                  Icons.description_outlined,
-                  const Color(0xFFF3E5F5),
-                  () => _showContent(context, StringHelper.terms, StringHelper.termsContent),
-                ),
-                _buildSettingsItem(
-                  context,
-                  StringHelper.privacy,
-                  StringHelper.privacyDesc,
-                  Icons.security_outlined,
-                  const Color(0xFFE8F5E9),
-                  () => _showContent(context, StringHelper.privacy, StringHelper.privacyContent),
-                ),
-                const SizedBox(height: 40),
-                Center(
-                  child: Text(
-                    '${StringHelper.appName} ${StringHelper.version}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-                  ),
-                ),
-              ].animate(interval: 100.ms).fadeIn().slideY(begin: 0.1),
+          _buildSettingsItem(
+            context,
+            StringHelper.language,
+            StringHelper.languageDefault,
+            Icons.language,
+            const Color(0xFFFFF9C4),
+            () => context.push('/language'),
+          ),
+          
+          const SizedBox(height: 32),
+          _buildSectionTitle(StringHelper.support),
+          const SizedBox(height: 12),
+          _buildSettingsItem(
+            context,
+            StringHelper.faq,
+            StringHelper.faqDesc,
+            Icons.help_outline,
+            const Color(0xFFE1F5FE),
+            () => ResponsiveLayout.isTablet(context) 
+                ? context.push('/faq') 
+                : _showFAQ(context),
+          ),
+          const SizedBox(height: 32),
+          _buildSectionTitle(StringHelper.legal),
+          const SizedBox(height: 12),
+          _buildSettingsItem(
+            context,
+            StringHelper.terms,
+            StringHelper.termsDesc,
+            Icons.description_outlined,
+            const Color(0xFFF3E5F5),
+            () => ResponsiveLayout.isTablet(context) 
+                ? context.push('/terms') 
+                : _showContent(context, StringHelper.terms, StringHelper.termsContent),
+          ),
+          _buildSettingsItem(
+            context,
+            StringHelper.privacy,
+            StringHelper.privacyDesc,
+            Icons.security_outlined,
+            const Color(0xFFE8F5E9),
+            () => ResponsiveLayout.isTablet(context) 
+                ? context.push('/privacy') 
+                : _showContent(context, StringHelper.privacy, StringHelper.privacyContent),
+          ),
+          const SizedBox(height: 40),
+          Center(
+            child: Text(
+              '${StringHelper.appName} ${StringHelper.version}',
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
-        );
-      }
+        ].animate(interval: 100.ms).fadeIn().slideY(begin: 0.1),
+      ),
     );
   }
 
@@ -263,6 +277,9 @@ class SettingsScreen extends StatelessWidget {
                   _buildFAQItem(context, StringHelper.faqQ5, StringHelper.faqA5),
                   _buildFAQItem(context, StringHelper.faqQ6, StringHelper.faqA6),
                   _buildFAQItem(context, StringHelper.faqQ7, StringHelper.faqA7),
+                  _buildFAQItem(context, StringHelper.faqQ9, StringHelper.faqA9),
+                  _buildFAQItem(context, StringHelper.faqQ10, StringHelper.faqA10),
+                  _buildFAQItem(context, StringHelper.faqQ11, StringHelper.faqA11),
                 ],
               ),
             ),

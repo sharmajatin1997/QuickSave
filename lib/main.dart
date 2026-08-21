@@ -16,11 +16,13 @@ import 'screens/remove_audio_screen.dart';
 import 'screens/extract_mp3_screen.dart';
 import 'screens/add_watermark_screen.dart';
 import 'screens/compress_screen.dart';
+import 'screens/content_detail_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/language_screen.dart';
 import 'utils/string_helper.dart';
 import 'utils/theme_notifier.dart';
 import 'utils/language_notifier.dart';
+import 'widgets/responsive_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,38 +34,54 @@ final GoRouter _router = GoRouter(
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-    GoRoute(
-      path: '/format',
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return FormatScreen(
-          url: extra['url'] as String,
-          info: extra['info'] as VideoInfo,
-        );
-      },
-    ),
-    GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
-    GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
-    GoRoute(path: '/language', builder: (context, state) => const LanguageScreen()),
-    GoRoute(path: '/tools', builder: (context, state) => const ToolsScreen()),
-    GoRoute(path: '/trim', builder: (context, state) => const TrimVideoScreen()),
-    GoRoute(path: '/convert', builder: (context, state) => const ConvertFormatScreen()),
-    GoRoute(path: '/remove-watermark', builder: (context, state) => const RemoveWatermarkScreen()),
-    GoRoute(path: '/remove-audio', builder: (context, state) => const RemoveAudioScreen()),
-    GoRoute(path: '/extract-mp3', builder: (context, state) => const ExtractMp3Screen()),
-    GoRoute(path: '/add-watermark', builder: (context, state) => const AddWatermarkScreen()),
-    GoRoute(path: '/compress', builder: (context, state) => const CompressScreen()),
-    GoRoute(
-      path: '/platform',
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return PlatformDownloadScreen(
-          platformName: extra['name'] as String,
-          platformIcon: extra['icon'] as IconData,
-          platformColor: extra['color'] as Color,
-        );
-      },
+    
+    // ShellRoute for Responsive Tablet Layout
+    ShellRoute(
+      builder: (context, state, child) => ResponsiveLayout(child: child),
+      routes: [
+        GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+        GoRoute(
+          path: '/format',
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            return FormatScreen(
+              url: extra['url'] as String,
+              info: extra['info'] as VideoInfo,
+            );
+          },
+        ),
+        GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
+        GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
+        GoRoute(path: '/language', builder: (context, state) => const LanguageScreen()),
+        GoRoute(path: '/tools', builder: (context, state) => const ToolsScreen()),
+        GoRoute(path: '/trim', builder: (context, state) => const TrimVideoScreen()),
+        GoRoute(path: '/convert', builder: (context, state) => const ConvertFormatScreen()),
+        GoRoute(path: '/remove-watermark', builder: (context, state) => const RemoveWatermarkScreen()),
+        GoRoute(path: '/remove-audio', builder: (context, state) => const RemoveAudioScreen()),
+        GoRoute(path: '/extract-mp3', builder: (context, state) => const ExtractMp3Screen()),
+        GoRoute(path: '/add-watermark', builder: (context, state) => const AddWatermarkScreen()),
+        GoRoute(path: '/compress', builder: (context, state) => const CompressScreen()),
+        GoRoute(path: '/faq', builder: (context, state) => const FAQDetailScreen()),
+        GoRoute(
+          path: '/terms', 
+          builder: (context, state) => ContentDetailScreen(title: StringHelper.terms, content: StringHelper.termsContent)
+        ),
+        GoRoute(
+          path: '/privacy', 
+          builder: (context, state) => ContentDetailScreen(title: StringHelper.privacy, content: StringHelper.privacyContent)
+        ),
+        GoRoute(
+          path: '/platform',
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            return PlatformDownloadScreen(
+              platformName: extra['name'] as String,
+              platformIcon: extra['icon'] as IconData,
+              platformColor: extra['color'] as Color,
+            );
+          },
+        ),
+      ],
     ),
   ],
 );
@@ -108,7 +126,7 @@ class QuickSaveApp extends StatelessWidget {
                 useMaterial3: true,
                 brightness: Brightness.dark,
                 fontFamily: 'Lexend',
-                scaffoldBackgroundColor: const Color(0xFF121212),
+                scaffoldBackgroundColor: const Color(0xFF121212) ,
                 colorScheme: ColorScheme.fromSeed(
                   seedColor: const Color(0xFF00E5FF),
                   brightness: Brightness.dark,

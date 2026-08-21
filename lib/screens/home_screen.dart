@@ -6,6 +6,7 @@ import '../services/api_service.dart';
 import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
+import '../widgets/responsive_layout.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -82,37 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, lang, _) {
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF0F0F0),
+          appBar: NeuAppBar(
+            title: StringHelper.appName,
+            leading: !ResponsiveLayout.isTablet(context) 
+                ? buildCircleIcon(Icons.settings, () => context.push('/settings')).animate().scale(delay: 100.ms)
+                : null,
+            actions: [
+               buildCircleIcon(Icons.history, () => context.push('/history')).animate().scale(delay: 200.ms),
+            ],
+          ),
           body: Column(
             children: [
-              // Custom Header
-              Container(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 14, bottom: 15, left: 24, right: 24),
-                decoration: BoxDecoration(
-                  color: NeuColors.header,
-                  border: Border(bottom: BorderSide(color: borderColor, width: 3)),
-                ),
-                child: Row(
-                  children: [
-                    buildCircleIcon(Icons.settings, () => context.push('/settings')).animate().scale(delay: 100.ms),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          StringHelper.appName,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            letterSpacing: -1,
-                          ),
-                        ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2),
-                      ),
-                    ),
-                    buildCircleIcon(Icons.history, () => context.push('/history')).animate().scale(delay: 200.ms),
-                  ],
-                ),
-              ),
-
               Expanded(
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
@@ -214,6 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         _buildToolCard(StringHelper.removeWatermark, StringHelper.removeWatermarkDesc, Icons.auto_fix_high_rounded, const Color(0xFFE1F5FE), textColor, onTap: () => context.push('/remove-watermark')),
                         _buildToolCard(StringHelper.addWatermark, StringHelper.addWatermarkDesc, Icons.branding_watermark_rounded, const Color(0xFFF3E5F5), textColor, onTap: () => context.push('/add-watermark')),
                         _buildToolCard(StringHelper.trimVideo, StringHelper.trimVideoDesc, Icons.content_cut, const Color(0xFFE8F5E9), textColor, onTap: () => context.push('/trim')),
+                        if (ResponsiveLayout.isTablet(context)) ...[
+                          _buildToolCard(StringHelper.convertFormat, StringHelper.convertFormatDesc, Icons.swap_horiz, const Color(0xFFFFF3E0), textColor, onTap: () => context.push('/convert')),
+                          _buildToolCard(StringHelper.compress, StringHelper.compressDesc, Icons.compress, const Color(0xFFF1F8E9), textColor, onTap: () => context.push('/compress')),
+                        ],
                       ].animate(interval: 100.ms).fadeIn(delay: 1100.ms).slideX(begin: 0.1),
                     ),
                     const SizedBox(height: 30),

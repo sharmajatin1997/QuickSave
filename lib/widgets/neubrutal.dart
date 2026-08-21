@@ -165,6 +165,7 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double? fontSize;
   final Widget? leading;
   final List<Widget>? actions;
+  final bool centerTitle;
 
   const NeuAppBar({
     super.key,
@@ -172,17 +173,18 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.fontSize,
     this.leading,
     this.actions,
+    this.centerTitle = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color borderColor = isDark ? Colors.white : Colors.black;
+    
     return Container(
       height: preferredSize.height,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
-        bottom: Platform.isAndroid ? 0 : 10,
         left: 24,
         right: 24,
       ),
@@ -191,31 +193,36 @@ class NeuAppBar extends StatelessWidget implements PreferredSizeWidget {
         border: Border(bottom: BorderSide(color: borderColor, width: 3)),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          leading ?? const SizedBox(width: 44),
+          SizedBox(
+            width: 44,
+            child: leading ?? const SizedBox.shrink(),
+          ),
           Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: fontSize ?? 28,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: -1,
-                  ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                title,
+                textAlign: centerTitle ? TextAlign.center : TextAlign.start,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: fontSize ?? 28,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: -1,
                 ),
               ),
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actions ?? [const SizedBox(width: 44)],
+          SizedBox(
+            width: actions != null ? null : 44,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: actions ?? [const SizedBox.shrink()],
+            ),
           ),
         ],
       ),
