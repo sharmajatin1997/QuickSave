@@ -237,47 +237,56 @@ void showNeuDialog({
   required BuildContext context,
   required String title,
   required String body,
-  VoidCallback? onConfirm,
+  void Function(BuildContext)? onConfirm,
   String? confirmText,
   List<Widget>? actions,
 }) {
   showDialog(
     context: context,
-    builder: (context) {
-      final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    builder: (dialogContext) {
+      final bool isDark = Theme.of(dialogContext).brightness == Brightness.dark;
       final Color textColor = isDark ? Colors.white : Colors.black;
 
       return Dialog(
         backgroundColor: Colors.transparent,
-        child: NeuContainer(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: textColor),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                body,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF666666)),
-              ),
-              const SizedBox(height: 24),
-              if (actions != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actions,
-                )
-              else
-                NeuButton(
-                  onTap: onConfirm ?? () => Navigator.pop(context),
-                  color: NeuColors.accent,
-                  height: 48,
-                  child: Text(confirmText ?? StringHelper.ok),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 450), // Standard mobile-like width
+          child: NeuContainer(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: textColor),
                 ),
-            ],
+                const SizedBox(height: 12),
+                Text(
+                  body,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF666666)),
+                ),
+                const SizedBox(height: 24),
+                if (actions != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: actions,
+                  )
+                else
+                  NeuButton(
+                    onTap: () {
+                      if (onConfirm != null) {
+                        onConfirm(dialogContext);
+                      } else {
+                        Navigator.pop(dialogContext);
+                      }
+                    },
+                    color: NeuColors.accent,
+                    height: 48,
+                    child: Text(confirmText ?? StringHelper.ok),
+                  ),
+              ],
+            ),
           ),
         ));
     },

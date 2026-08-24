@@ -76,8 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color textColor = isDark ? Colors.white : Colors.black;
-    final Color borderColor = isDark ? Colors.white : Colors.black;
-
     return ValueListenableBuilder<String>(
       valueListenable: LanguageNotifier.languageCode,
       builder: (context, lang, _) {
@@ -201,8 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ].animate(interval: 100.ms).fadeIn(delay: 1100.ms).slideX(begin: 0.1),
                     ),
-                    const SizedBox(height: 30),
-
                   ],
                 ),
                             ),

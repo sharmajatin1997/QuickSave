@@ -13,6 +13,7 @@ import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../services/history_service.dart';
+import '../services/ad_service.dart';
 import '../models/video_info.dart';
 
 class AddWatermarkScreen extends StatefulWidget {
@@ -106,6 +107,12 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
 
   Future<void> _handleAddWatermark() async {
     if (_selectedVideo == null) return;
+    
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startAddWatermarkProcess());
+  }
+
+  Future<void> _startAddWatermarkProcess() async {
     setState(() => _isProcessing = true);
 
     try {
@@ -142,8 +149,8 @@ class _AddWatermarkScreenState extends State<AddWatermarkScreen> {
         ));
         if (mounted) {
           setState(() => _isProcessing = false);
-          showNeuDialog(context: context, title: StringHelper.success, body: StringHelper.videoSavedSuccess, onConfirm: () {
-            Navigator.pop(context);
+          showNeuDialog(context: context, title: StringHelper.success, body: StringHelper.videoSavedSuccess, onConfirm: (ctx) {
+            Navigator.pop(ctx);
             context.push('/history');
           });
         }

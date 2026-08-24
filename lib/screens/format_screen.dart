@@ -13,6 +13,7 @@ import '../services/api_service.dart';
 import '../services/history_service.dart';
 import '../widgets/neubrutal.dart';
 import '../utils/language_notifier.dart';
+import '../services/ad_service.dart';
 
 class FormatScreen extends StatefulWidget {
   final String url;
@@ -43,6 +44,11 @@ class _FormatScreenState extends State<FormatScreen> {
       return;
     }
 
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startDownloadProcess(isAudio));
+  }
+
+  Future<void> _startDownloadProcess(bool isAudio) async {
     setState(() {
       _downloading = true;
       _progress = 0;
@@ -120,7 +126,9 @@ class _FormatScreenState extends State<FormatScreen> {
         Expanded(
           child: NeuButton(
             onTap: () {
-              Navigator.pop(context);
+              // We need to pop the dialog specifically.
+              // Since actions bypass the default onConfirm, we use Navigator.pop
+              Navigator.pop(context); 
               context.push('/history');
             },
             color: Colors.white,

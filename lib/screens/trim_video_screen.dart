@@ -16,6 +16,8 @@ import '../services/api_service.dart';
 import '../services/history_service.dart';
 import '../models/video_info.dart';
 
+import '../services/ad_service.dart';
+
 class TrimVideoScreen extends StatefulWidget {
   const TrimVideoScreen({super.key});
 
@@ -155,6 +157,12 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
 
   Future<void> _saveVideo() async {
     if (_currentFile == null) return;
+    
+    // Show Interstitial Ad before starting the trim/save process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startSaveProcess());
+  }
+
+  Future<void> _startSaveProcess() async {
     setState(() => _isTrimming = true);
     try {
       final String? outputPath = await _nativeTrimmer.trimVideo(
@@ -179,8 +187,8 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
             context: context,
             title: StringHelper.success,
             body: StringHelper.trimmedSavedSuccess,
-            onConfirm: () {
-              Navigator.pop(context);
+            onConfirm: (ctx) {
+              Navigator.pop(ctx);
               context.push('/history');
             },
           );

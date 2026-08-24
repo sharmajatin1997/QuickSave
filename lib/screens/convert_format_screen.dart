@@ -89,8 +89,8 @@ class _ConvertFormatScreenState extends State<ConvertFormatScreen> {
               context: context,
               title: StringHelper.success,
               body: StringHelper.conversionSuccess,
-              onConfirm: () {
-                Navigator.pop(context);
+              onConfirm: (ctx) {
+                Navigator.pop(ctx);
                 context.push('/history');
               },
             );

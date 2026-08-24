@@ -23,10 +23,12 @@ import 'utils/string_helper.dart';
 import 'utils/theme_notifier.dart';
 import 'utils/language_notifier.dart';
 import 'widgets/responsive_layout.dart';
+import 'services/ad_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LanguageNotifier.init();
+  await AdService.init();
   runApp(const QuickSaveApp());
 }
 

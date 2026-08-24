@@ -33,89 +33,94 @@ class SettingsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(StringHelper.preferences),
-          const SizedBox(height: 12),
-          
-          // Theme Option
-          ValueListenableBuilder<ThemeMode>(
-            valueListenable: ThemeNotifier.themeMode,
-            builder: (context, mode, child) {
-              String themeLabel = StringHelper.lightMode;
-              if (mode == ThemeMode.dark) themeLabel = StringHelper.darkMode;
-              if (mode == ThemeMode.system) themeLabel = StringHelper.systemDefault;
+    return ValueListenableBuilder<String>(
+      valueListenable: LanguageNotifier.languageCode,
+      builder: (context, langCode, child) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(StringHelper.preferences),
+              const SizedBox(height: 12),
+              
+              // Theme Option
+              ValueListenableBuilder<ThemeMode>(
+                valueListenable: ThemeNotifier.themeMode,
+                builder: (context, mode, child) {
+                  String themeLabel = StringHelper.lightMode;
+                  if (mode == ThemeMode.dark) themeLabel = StringHelper.darkMode;
+                  if (mode == ThemeMode.system) themeLabel = StringHelper.systemDefault;
 
-              return _buildSettingsItem(
+                  return _buildSettingsItem(
+                    context,
+                    StringHelper.theme,
+                    themeLabel,
+                    Icons.palette_outlined,
+                    const Color(0xFFE8EAF6),
+                    () => _showThemePicker(context),
+                  );
+                },
+              ),
+
+              _buildSettingsItem(
                 context,
-                StringHelper.theme,
-                themeLabel,
-                Icons.palette_outlined,
-                const Color(0xFFE8EAF6),
-                () => _showThemePicker(context),
-              );
-            },
-          ),
-
-          _buildSettingsItem(
-            context,
-            StringHelper.language,
-            StringHelper.languageDefault,
-            Icons.language,
-            const Color(0xFFFFF9C4),
-            () => context.push('/language'),
-          ),
-          
-          const SizedBox(height: 32),
-          _buildSectionTitle(StringHelper.support),
-          const SizedBox(height: 12),
-          _buildSettingsItem(
-            context,
-            StringHelper.faq,
-            StringHelper.faqDesc,
-            Icons.help_outline,
-            const Color(0xFFE1F5FE),
-            () => ResponsiveLayout.isTablet(context) 
-                ? context.push('/faq') 
-                : _showFAQ(context),
-          ),
-          const SizedBox(height: 32),
-          _buildSectionTitle(StringHelper.legal),
-          const SizedBox(height: 12),
-          _buildSettingsItem(
-            context,
-            StringHelper.terms,
-            StringHelper.termsDesc,
-            Icons.description_outlined,
-            const Color(0xFFF3E5F5),
-            () => ResponsiveLayout.isTablet(context) 
-                ? context.push('/terms') 
-                : _showContent(context, StringHelper.terms, StringHelper.termsContent),
-          ),
-          _buildSettingsItem(
-            context,
-            StringHelper.privacy,
-            StringHelper.privacyDesc,
-            Icons.security_outlined,
-            const Color(0xFFE8F5E9),
-            () => ResponsiveLayout.isTablet(context) 
-                ? context.push('/privacy') 
-                : _showContent(context, StringHelper.privacy, StringHelper.privacyContent),
-          ),
-          const SizedBox(height: 40),
-          Center(
-            child: Text(
-              '${StringHelper.appName} ${StringHelper.version}',
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                StringHelper.language,
+                StringHelper.languageDefault,
+                Icons.language,
+                const Color(0xFFFFF9C4),
+                () => context.push('/language'),
+              ),
+              
+              const SizedBox(height: 32),
+              _buildSectionTitle(StringHelper.support),
+              const SizedBox(height: 12),
+              _buildSettingsItem(
+                context,
+                StringHelper.faq,
+                StringHelper.faqDesc,
+                Icons.help_outline,
+                const Color(0xFFE1F5FE),
+                () => ResponsiveLayout.isTablet(context) 
+                    ? context.push('/faq') 
+                    : _showFAQ(context),
+              ),
+              const SizedBox(height: 32),
+              _buildSectionTitle(StringHelper.legal),
+              const SizedBox(height: 12),
+              _buildSettingsItem(
+                context,
+                StringHelper.terms,
+                StringHelper.termsDesc,
+                Icons.description_outlined,
+                const Color(0xFFF3E5F5),
+                () => ResponsiveLayout.isTablet(context) 
+                    ? context.push('/terms') 
+                    : _showContent(context, StringHelper.terms, StringHelper.termsContent),
+              ),
+              _buildSettingsItem(
+                context,
+                StringHelper.privacy,
+                StringHelper.privacyDesc,
+                Icons.security_outlined,
+                const Color(0xFFE8F5E9),
+                () => ResponsiveLayout.isTablet(context) 
+                    ? context.push('/privacy') 
+                    : _showContent(context, StringHelper.privacy, StringHelper.privacyContent),
+              ),
+              const SizedBox(height: 40),
+              Center(
+              child: Text(
+                '${StringHelper.appName} ${StringHelper.version}',
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
             ),
-          ),
-        ].animate(interval: 100.ms).fadeIn().slideY(begin: 0.1),
-      ),
-    );
-  }
+          ].animate(interval: 50.ms).fadeIn().slideY(begin: 0.1),
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildSectionTitle(String title) {
     return Text(
