@@ -12,6 +12,7 @@ import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../services/api_service.dart';
 import '../services/history_service.dart';
+import '../services/ad_service.dart';
 import '../models/video_info.dart';
 
 class RemoveAudioScreen extends StatefulWidget {
@@ -71,6 +72,11 @@ class _RemoveAudioScreenState extends State<RemoveAudioScreen> {
   }
 
   Future<void> _processRemoveAudio(File inputFile) async {
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startRemoveAudioProcess(inputFile));
+  }
+
+  Future<void> _startRemoveAudioProcess(File inputFile) async {
     setState(() {
       _isLoading = true;
       _statusText = StringHelper.removingAudio;
@@ -105,8 +111,8 @@ class _RemoveAudioScreenState extends State<RemoveAudioScreen> {
               context: context,
               title: StringHelper.success,
               body: StringHelper.audioRemovedSuccess,
-              onConfirm: () {
-                Navigator.pop(context);
+              onConfirm: (ctx) {
+                Navigator.pop(ctx);
                 context.push('/history');
               },
             );

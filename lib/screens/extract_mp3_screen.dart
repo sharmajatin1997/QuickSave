@@ -12,6 +12,7 @@ import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../services/api_service.dart';
 import '../services/history_service.dart';
+import '../services/ad_service.dart';
 import '../models/video_info.dart';
 
 class ExtractMp3Screen extends StatefulWidget {
@@ -78,6 +79,11 @@ class _ExtractMp3ScreenState extends State<ExtractMp3Screen> {
   }
 
   Future<void> _processExtractMp3(File inputFile, {bool isAudioOnlySource = false}) async {
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startExtractMp3Process(inputFile, isAudioOnlySource));
+  }
+
+  Future<void> _startExtractMp3Process(File inputFile, bool isAudioOnlySource) async {
     setState(() {
       _isLoading = true;
       _statusText = StringHelper.extractingAudio;
@@ -120,8 +126,8 @@ class _ExtractMp3ScreenState extends State<ExtractMp3Screen> {
               context: context,
               title: StringHelper.success,
               body: StringHelper.audioExtractedSuccess,
-              onConfirm: () {
-                Navigator.pop(context);
+              onConfirm: (ctx) {
+                Navigator.pop(ctx);
                 context.push('/history');
               },
             );

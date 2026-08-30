@@ -22,19 +22,6 @@ subprojects {
     }
 }
 
-allprojects {
-    fun configure() {
-        if (project.hasProperty("android")) {
-            val android = project.extensions.findByName("android") as? BaseExtension
-            android?.let {
-                it.compileSdkVersion(36)
-                it.buildToolsVersion("36.0.0")
-            }
-        }
-    }
-    if (project.state.executed) configure() else project.afterEvaluate { configure() }
-}
-
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

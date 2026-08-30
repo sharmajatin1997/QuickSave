@@ -82,95 +82,106 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         itemBuilder: (context, i) {
                           final item = _items[i];
                           final date = DateTime.fromMillisecondsSinceEpoch(item.savedAt);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (item.localPath.isNotEmpty) {
-                                  Share.shareXFiles([XFile(item.localPath)], text: item.title);
-                                }
-                              },
-                              child: NeuContainer(
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  children: [
-                                    NeuContainer(
-                                      padding: EdgeInsets.zero,
-                                      borderRadius: 8,
-                                      shadowOffset: 2,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: (item.thumbnail != null && item.thumbnail!.isNotEmpty)
-                                            ? CachedNetworkImage(
-                                                imageUrl: item.thumbnail!,
-                                                width: 60,
-                                                height: 60,
-                                                fit: BoxFit.cover,
-                                                errorWidget: (context, url, error) => _buildPlaceholderIcon(item.audioOnly),
-                                              )
-                                            : _buildPlaceholderIcon(item.audioOnly),
-                                      ),
-                                    ).animate().scale(delay: (i * 100).ms, curve: Curves.easeOutBack),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                          return Builder(
+                            builder: (itemContext) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (item.localPath.isNotEmpty) {
+                                      final box = itemContext.findRenderObject() as RenderBox?;
+                                      Share.shareXFiles(
+                                        [XFile(item.localPath)],
+                                        text: item.title,
+                                        sharePositionOrigin: box != null 
+                                            ? (box.localToGlobal(Offset.zero) & box.size) 
+                                            : null,
+                                      );
+                                    }
+                                  },
+                                  child: NeuContainer(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Row(
+                                      children: [
+                                        NeuContainer(
+                                          padding: EdgeInsets.zero,
+                                          borderRadius: 8,
+                                          shadowOffset: 2,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(8),
+                                            child: (item.thumbnail != null && item.thumbnail!.isNotEmpty)
+                                                ? CachedNetworkImage(
+                                                    imageUrl: item.thumbnail!,
+                                                    width: 60,
+                                                    height: 60,
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (context, url, error) => _buildPlaceholderIcon(item.audioOnly),
+                                                  )
+                                                : _buildPlaceholderIcon(item.audioOnly),
+                                          ),
+                                        ).animate().scale(delay: (i * 100).ms, curve: Curves.easeOutBack),
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                child: Text(
-                                                  item.title,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: textColor),
-                                                ),
-                                              ),
-                                              if (item.actionType != null)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 8.0),
-                                                  child: Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                    decoration: BoxDecoration(
-                                                      color: _getTagColor(item.actionType!),
-                                                      borderRadius: BorderRadius.circular(4),
-                                                      border: Border.all(color: Colors.black, width: 1),
-                                                    ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
                                                     child: Text(
-                                                      item.actionType!.toUpperCase(),
-                                                      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black),
+                                                      item.title,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: textColor),
                                                     ),
                                                   ),
-                                                ),
+                                                  if (item.actionType != null)
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 8.0),
+                                                      child: Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                        decoration: BoxDecoration(
+                                                          color: _getTagColor(item.actionType!),
+                                                          borderRadius: BorderRadius.circular(4),
+                                                          border: Border.all(color: Colors.black, width: 1),
+                                                        ),
+                                                        child: Text(
+                                                          item.actionType!.toUpperCase(),
+                                                          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    item.audioOnly ? Icons.music_note : Icons.videocam,
+                                                    size: 14,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${item.audioOnly ? StringHelper.mp3 : StringHelper.video} · ${date.day}/${date.month}/${date.year}',
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                          const SizedBox(height: 4),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                item.audioOnly ? Icons.music_note : Icons.videocam,
-                                                size: 14,
-                                                color: Colors.grey,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Expanded(
-                                                child: Text(
-                                                  '${item.audioOnly ? StringHelper.mp3 : StringHelper.video} · ${date.day}/${date.month}/${date.year}',
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        Icon(Icons.open_in_new, size: 20, color: isDark ? Colors.white : Colors.black),
+                                      ],
                                     ),
-                                    Icon(Icons.open_in_new, size: 20, color: isDark ? Colors.white : Colors.black),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }
                           ).animate().fadeIn(delay: (i * 50).ms).slideX(begin: 0.1);
                         },
                       ),

@@ -13,6 +13,7 @@ import '../services/api_service.dart';
 import '../services/history_service.dart';
 import '../widgets/neubrutal.dart';
 import '../utils/language_notifier.dart';
+import '../services/ad_service.dart';
 
 class FormatScreen extends StatefulWidget {
   final String url;
@@ -43,6 +44,11 @@ class _FormatScreenState extends State<FormatScreen> {
       return;
     }
 
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startDownloadProcess(isAudio));
+  }
+
+  Future<void> _startDownloadProcess(bool isAudio) async {
     setState(() {
       _downloading = true;
       _progress = 0;
@@ -91,7 +97,7 @@ class _FormatScreenState extends State<FormatScreen> {
       ));
 
       if (!mounted) return;
-      _showSuccessDialog();
+      _showSuccessDialog(context);
     } catch (e) {
       showNeuDialog(
         context: context,
@@ -111,7 +117,7 @@ class _FormatScreenState extends State<FormatScreen> {
     );
   }
 
-  void _showSuccessDialog() {
+  void _showSuccessDialog(BuildContext context) {
     showNeuDialog(
       context: context,
       title: StringHelper.saved,
@@ -120,7 +126,7 @@ class _FormatScreenState extends State<FormatScreen> {
         Expanded(
           child: NeuButton(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop();
               context.push('/history');
             },
             color: Colors.white,
@@ -132,8 +138,7 @@ class _FormatScreenState extends State<FormatScreen> {
         Expanded(
           child: NeuButton(
             onTap: () {
-              Navigator.pop(context);
-              context.push('/history');
+              Navigator.of(context, rootNavigator: true).pop();
             },
             color: NeuColors.accent,
             height: 48,
@@ -158,92 +163,90 @@ class _FormatScreenState extends State<FormatScreen> {
             title: StringHelper.appName,
             leading: buildCircleIcon(Icons.arrow_back, () => Navigator.pop(context)),
           ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.info.thumbnail != null)
-                          NeuContainer(
-                            padding: EdgeInsets.zero,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: widget.info.thumbnail!,
-                                height: 180,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ).animate().fadeIn().scale(curve: Curves.easeOutBack),
-                        const SizedBox(height: 16),
-                        Text(
-                          widget.info.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor),
-                        ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
-                        Text(
-                          'from ${widget.info.extractor}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                        ).animate().fadeIn(delay: 300.ms),
-                        const SizedBox(height: 24),
-                        Text(StringHelper.videoQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
-                            .animate().fadeIn(delay: 400.ms),
-                        const SizedBox(height: 12),
-                        Column(
-                          children: _videoFormats.map((f) => _buildFormatItem(f, textColor)).toList()
-                            .animate(interval: 50.ms).fadeIn(delay: 500.ms).slideY(begin: 0.1),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(StringHelper.audioQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
-                            .animate().fadeIn(delay: 800.ms),
-                        const SizedBox(height: 12),
-                        _buildAudioItem(textColor).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                Padding(
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (_downloading) ...[
+                      if (widget.info.thumbnail != null)
                         NeuContainer(
-                          padding: const EdgeInsets.all(4),
-                          borderRadius: 20,
+                          padding: EdgeInsets.zero,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: LinearProgressIndicator(
-                              value: _progress > 0 ? _progress : null,
-                              minHeight: 12,
-                              backgroundColor: Colors.white,
-                              valueColor: const AlwaysStoppedAnimation<Color>(NeuColors.primary),
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.info.thumbnail!,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ).animate().fadeIn().scaleY(),
-                        const SizedBox(height: 16),
-                      ],
-                      NeuButton(
-                        onTap: _downloading ? null : () => _handleDownload(),
-                        color: NeuColors.primary,
-                        child: Text(
-                          _downloading ? '${StringHelper.downloading}...' : (_audioSelected ? '${StringHelper.downloadBtn} ${StringHelper.mp3}' : '${StringHelper.downloadBtn} ${StringHelper.video}'),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
-                        ),
-                      ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.2),
+                        ).animate().fadeIn().scale(curve: Curves.easeOutBack),
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.info.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor),
+                      ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
+                      Text(
+                        'from ${widget.info.extractor}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                      ).animate().fadeIn(delay: 300.ms),
+                      const SizedBox(height: 24),
+                      Text(StringHelper.videoQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
+                          .animate().fadeIn(delay: 400.ms),
+                      const SizedBox(height: 12),
+                      Column(
+                        children: _videoFormats.map((f) => _buildFormatItem(f, textColor)).toList()
+                          .animate(interval: 50.ms).fadeIn(delay: 500.ms).slideY(begin: 0.1),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(StringHelper.audioQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
+                          .animate().fadeIn(delay: 800.ms),
+                      const SizedBox(height: 12),
+                      _buildAudioItem(textColor).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    if (_downloading) ...[
+                      NeuContainer(
+                        padding: const EdgeInsets.all(4),
+                        borderRadius: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: LinearProgressIndicator(
+                            value: _progress > 0 ? _progress : null,
+                            minHeight: 12,
+                            backgroundColor: Colors.white,
+                            valueColor: const AlwaysStoppedAnimation<Color>(NeuColors.primary),
+                          ),
+                        ),
+                      ).animate().fadeIn().scaleY(),
+                      const SizedBox(height: 16),
+                    ],
+                    NeuButton(
+                      onTap: _downloading ? null : () => _handleDownload(),
+                      color: NeuColors.primary,
+                      child: Text(
+                        _downloading ? '${StringHelper.downloading}...' : (_audioSelected ? '${StringHelper.downloadBtn} ${StringHelper.mp3}' : '${StringHelper.downloadBtn} ${StringHelper.video}'),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
+                      ),
+                    ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.2),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       }

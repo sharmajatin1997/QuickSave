@@ -12,6 +12,7 @@ import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../services/history_service.dart';
+import '../services/ad_service.dart';
 import '../models/video_info.dart';
 
 class RemoveWatermarkScreen extends StatefulWidget {
@@ -100,6 +101,11 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
       return;
     }
 
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startRemoveWatermarkProcess());
+  }
+
+  Future<void> _startRemoveWatermarkProcess() async {
     setState(() => _isProcessing = true);
 
     try {
@@ -174,8 +180,8 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
               context: context,
               title: StringHelper.success,
               body: StringHelper.erasedSavedSuccess,
-              onConfirm: () {
-                Navigator.pop(context);
+              onConfirm: (ctx) {
+                Navigator.pop(ctx);
                 context.push('/history');
               },
             );
@@ -235,11 +241,11 @@ class _RemoveWatermarkScreenState extends State<RemoveWatermarkScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          NeuContainer(
-            padding: const EdgeInsets.all(32),
+          const NeuContainer(
+            padding: EdgeInsets.all(32),
             color: NeuColors.accent,
             borderRadius: 100,
-            child: const Icon(Icons.auto_fix_high_rounded, size: 64, color: Colors.black),
+            child: Icon(Icons.auto_fix_high_rounded, size: 64, color: Colors.black),
           ).animate().scale(curve: Curves.elasticOut, duration: 800.ms),
           const SizedBox(height: 40),
           Text(

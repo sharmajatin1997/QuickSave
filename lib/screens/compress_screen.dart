@@ -11,6 +11,7 @@ import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../services/history_service.dart';
+import '../services/ad_service.dart';
 import '../models/video_info.dart';
 
 class CompressScreen extends StatefulWidget {
@@ -50,6 +51,11 @@ class _CompressScreenState extends State<CompressScreen> {
       return;
     }
 
+    // Show Interstitial Ad before starting the process
+    await AdService.showInterstitialAd(onAdDismissed: () => _startCompressionProcess());
+  }
+
+  Future<void> _startCompressionProcess() async {
     setState(() => _isCompressing = true);
 
     try {
@@ -140,8 +146,8 @@ class _CompressScreenState extends State<CompressScreen> {
               body: "${StringHelper.compressedSavedSuccess}\n\n"
                     "${StringHelper.originalSize}: ${_getFileSize(originalSize)}\n"
                     "${StringHelper.compressedSize}: ${_getFileSize(newSize)}",
-              onConfirm: () {
-                Navigator.pop(context);
+              onConfirm: (ctx) {
+                Navigator.pop(ctx);
                 context.push('/history');
               },
             );

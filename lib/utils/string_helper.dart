@@ -134,6 +134,12 @@ class StringHelper {
   static String get faqA6 => _get('faqA6');
   static String get faqQ7 => _get('faqQ7');
   static String get faqA7 => _get('faqA7');
+  static String get faqQ9 => _get('faqQ9');
+  static String get faqA9 => _get('faqA9');
+  static String get faqQ10 => _get('faqQ10');
+  static String get faqA10 => _get('faqA10');
+  static String get faqQ11 => _get('faqQ11');
+  static String get faqA11 => _get('faqA11');
 
   // Format Screen
   static String get selectFormat => _get('selectFormat');
