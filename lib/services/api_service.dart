@@ -8,8 +8,8 @@ class ApiService {
   // - Physical phone   -> http://<your-computer-local-ip>:4000
   // - Production       -> https://your-deployed-backend.com
   // static const String baseUrl = 'http://10.0.2.2:4000'; // For Android Emulator
-  // static const String baseUrl = 'http://192.168.20.172:4000'; // For Physical Phone
-  static const String baseUrl = 'http://localhost:4000'; // For iOS Simulator
+  static const String baseUrl = 'https://quicksave-backend-wq7x.onrender.com'; // For Physical Phone
+  // static const String baseUrl = 'http://localhost:4000'; // For iOS Simulator
 
   final Dio _dio = Dio(
     BaseOptions(

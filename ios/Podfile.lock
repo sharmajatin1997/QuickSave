@@ -46,11 +46,11 @@ PODS:
   - get_thumbnail_video (0.0.1):
     - Flutter
     - libwebp
-  - Google-Mobile-Ads-SDK (11.13.0):
+  - Google-Mobile-Ads-SDK (13.9.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (5.3.1):
+  - google_mobile_ads (9.1.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 11.13.0)
+    - Google-Mobile-Ads-SDK (~> 13.7)
     - webview_flutter_wkwebview
   - GoogleUserMessagingPlatform (3.1.0)
   - image_picker_ios (0.0.1):
@@ -153,8 +153,8 @@ SPEC CHECKSUMS:
   flutter_native_video_trimmer: 11f6c679971dc3844519b485b9c878df8675ae3a
   gallery_saver_plus: 61c8a831d5975e2bf57f87bcd64379dcc7d29ff2
   get_thumbnail_video: 1a754d46b860dffefcc57b7290a43089cd5d7e58
-  Google-Mobile-Ads-SDK: 14f57f2dc33532a24db288897e26494640810407
-  google_mobile_ads: 16ad301354fa6a7ea55770c6254bd4339bf8558b
+  Google-Mobile-Ads-SDK: cec761d0da669c462bcc19cd16c747498b9f39f7
+  google_mobile_ads: 6b1c16497394528f4a59e76e2fc947cb32b101e2
   GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   libwebp: af5937a13536ef73f3784d69cc342b98961acf33
@@ -167,6 +167,6 @@ SPEC CHECKSUMS:
   video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
-PODFILE CHECKSUM: 6d365024466975a1c453560fa03a7bc7a0f403f0
+PODFILE CHECKSUM: 6b0118e36d169c528283a79f7de609b31decb50d
 
 COCOAPODS: 1.16.2

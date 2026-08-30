@@ -87,15 +87,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTapUp: (details) {
                                     if (item.localPath.isNotEmpty) {
-                                      final box = itemContext.findRenderObject() as RenderBox?;
                                       Share.shareXFiles(
                                         [XFile(item.localPath)],
                                         text: item.title,
-                                        sharePositionOrigin: box != null 
-                                            ? (box.localToGlobal(Offset.zero) & box.size) 
-                                            : null,
+                                        sharePositionOrigin: Rect.fromCenter(
+                                          center: details.globalPosition,
+                                          width: 10,
+                                          height: 10,
+                                        ),
                                       );
                                     }
                                   },
