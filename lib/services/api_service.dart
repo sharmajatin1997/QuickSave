@@ -39,7 +39,12 @@ class ApiService {
     return res.data['fileUrl'] as String;
   }
 
-  String fileUrlToAbsolute(String fileUrl) => '$baseUrl$fileUrl';
+  String fileUrlToAbsolute(String fileUrl) {
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+      return fileUrl;
+    }
+    return '$baseUrl$fileUrl';
+  }
 
   /// Downloads the file to [savePath] with progress updates.
   Future<void> downloadFile({

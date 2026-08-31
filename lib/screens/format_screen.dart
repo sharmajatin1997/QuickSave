@@ -37,6 +37,14 @@ class _FormatScreenState extends State<FormatScreen> {
   List<VideoFormat> get _videoFormats =>
       widget.info.formats.where((f) => f.hasVideo).toList();
 
+  @override
+  void initState() {
+    super.initState();
+    if (_videoFormats.length == 1) {
+      _selected = _videoFormats.first;
+    }
+  }
+
   Future<void> _handleDownload({bool audioOnly = false}) async {
     final isAudio = audioOnly || _audioSelected;
     if (!isAudio && _selected == null) {
@@ -55,18 +63,26 @@ class _FormatScreenState extends State<FormatScreen> {
     });
 
     try {
-      final fileUrl = await _api.requestDownload(
-        url: widget.url,
-        formatId: isAudio ? null : _selected?.formatId,
-        audioOnly: isAudio,
-      );
+      String? fileUrl;
+      
+      // If the backend returned a direct download URL in the format object (e.g. RapidAPI), 
+      // bypass the /api/download endpoint to avoid 500 errors.
+      if (_selected?.url != null && _selected!.url!.isNotEmpty) {
+        fileUrl = _selected!.url;
+      } else {
+        fileUrl = await _api.requestDownload(
+          url: widget.url,
+          formatId: isAudio ? null : _selected?.formatId,
+          audioOnly: isAudio,
+        );
+      }
 
       final dir = await getApplicationDocumentsDirectory();
       final ext = isAudio ? 'mp3' : 'mp4';
       final savePath = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.$ext';
 
       await _api.downloadFile(
-        fileUrl: fileUrl,
+        fileUrl: fileUrl??'',
         savePath: savePath,
         onProgress: (received, total) {
           if (total > 0) setState(() => _progress = received / total);

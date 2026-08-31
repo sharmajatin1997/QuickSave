@@ -5,6 +5,7 @@ class VideoFormat {
   final bool hasVideo;
   final bool hasAudio;
   final int? filesize;
+  final String? url;
 
   VideoFormat({
     required this.formatId,
@@ -13,6 +14,7 @@ class VideoFormat {
     required this.hasVideo,
     required this.hasAudio,
     this.filesize,
+    this.url,
   });
 
   factory VideoFormat.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class VideoFormat {
       hasVideo: json['hasVideo'] ?? false,
       hasAudio: json['hasAudio'] ?? false,
       filesize: json['filesize'],
+      url: json['url']?.toString(),
     );
   }
 
