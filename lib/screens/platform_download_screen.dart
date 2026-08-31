@@ -6,6 +6,7 @@ import '../services/api_service.dart';
 import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlatformDownloadScreen extends StatefulWidget {
   final String platformName;
@@ -90,6 +91,16 @@ class _PlatformDownloadScreenState extends State<PlatformDownloadScreen> {
       _showAlert(
           StringHelper.invalidLink, '${StringHelper.pleasePasteAValid} ${widget.platformName} ${StringHelper.link}.');
       return;
+    }
+
+    if (widget.platformName == 'YouTube') {
+      final prefs = await SharedPreferences.getInstance();
+      final today = DateTime.now().toIso8601String().split('T').first;
+      final count = prefs.getInt('yt_download_count_$today') ?? 0;
+      if (count >= 2) {
+        _showAlert('Daily Limit Reached', 'You can only download 2 YouTube videos per day.');
+        return;
+      }
     }
 
     setState(() => _loading = true);

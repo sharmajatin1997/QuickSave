@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/video_info.dart';
 import '../services/api_service.dart';
@@ -111,6 +112,13 @@ class _FormatScreenState extends State<FormatScreen> {
         audioOnly: isAudio,
         actionType: StringHelper.tagDownload,
       ));
+
+      if (widget.url.toLowerCase().contains('youtube.com') || widget.url.toLowerCase().contains('youtu.be')) {
+        final prefs = await SharedPreferences.getInstance();
+        final today = DateTime.now().toIso8601String().split('T').first;
+        final count = prefs.getInt('yt_download_count_$today') ?? 0;
+        await prefs.setInt('yt_download_count_$today', count + 1);
+      }
 
       if (!mounted) return;
       _showSuccessDialog(context);
