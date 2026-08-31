@@ -7,7 +7,7 @@ import '../widgets/neubrutal.dart';
 import '../utils/string_helper.dart';
 import '../utils/language_notifier.dart';
 import '../widgets/responsive_layout.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _controller = TextEditingController();
   final ApiService _api = ApiService();
   bool _loading = false;
+  final _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -55,9 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final lowerUrl = url.toLowerCase();
     if (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be')) {
-      final prefs = await SharedPreferences.getInstance();
       final today = DateTime.now().toIso8601String().split('T').first;
-      final count = prefs.getInt('yt_download_count_$today') ?? 0;
+      final countStr = await _storage.read(key: 'yt_download_count_$today');
+      final count = int.tryParse(countStr ?? '0') ?? 0;
       if (count >= 2) {
         _showAlert('Daily Limit Reached', 'You can only download 2 YouTube videos per day.');
         return;

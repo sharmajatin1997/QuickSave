@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../models/video_info.dart';
 import '../services/api_service.dart';
@@ -34,6 +34,7 @@ class _FormatScreenState extends State<FormatScreen> {
   bool _audioSelected = false;
   bool _downloading = false;
   double _progress = 0;
+  final Set<String> _downloadedFormats = {};
 
   List<VideoFormat> get _videoFormats =>
       widget.info.formats.where((f) => f.hasVideo).toList();
@@ -53,8 +54,29 @@ class _FormatScreenState extends State<FormatScreen> {
       return;
     }
 
+    final currentFormatKey = isAudio ? 'audio' : _selected?.formatId ?? '';
+    if (_downloadedFormats.contains(currentFormatKey)) {
+      _showAlert(
+          'Already Downloaded\nYou have already downloaded this format.');
+      return;
+    }
+
+    final lowerUrl = widget.url.toLowerCase();
+    if (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be')) {
+      const storage = FlutterSecureStorage();
+      final today = DateTime.now().toIso8601String().split('T').first;
+      final countStr = await storage.read(key: 'yt_download_count_$today');
+      final count = int.tryParse(countStr ?? '0') ?? 0;
+      if (count >= 2) {
+        _showAlert(
+            'Daily Limit Reached\nYou can only download 2 YouTube videos per day.');
+        return;
+      }
+    }
+
     // Show Interstitial Ad before starting the process
-    await AdService.showInterstitialAd(onAdDismissed: () => _startDownloadProcess(isAudio));
+    await AdService.showInterstitialAd(
+        onAdDismissed: () => _startDownloadProcess(isAudio));
   }
 
   Future<void> _startDownloadProcess(bool isAudio) async {
@@ -65,8 +87,8 @@ class _FormatScreenState extends State<FormatScreen> {
 
     try {
       String? fileUrl;
-      
-      // If the backend returned a direct download URL in the format object (e.g. RapidAPI), 
+
+      // If the backend returned a direct download URL in the format object (e.g. RapidAPI),
       // bypass the /api/download endpoint to avoid 500 errors.
       if (_selected?.url != null && _selected!.url!.isNotEmpty) {
         fileUrl = _selected!.url;
@@ -80,10 +102,11 @@ class _FormatScreenState extends State<FormatScreen> {
 
       final dir = await getApplicationDocumentsDirectory();
       final ext = isAudio ? 'mp3' : 'mp4';
-      final savePath = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.$ext';
+      final savePath =
+          '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.$ext';
 
       await _api.downloadFile(
-        fileUrl: fileUrl??'',
+        fileUrl: fileUrl ?? '',
         savePath: savePath,
         onProgress: (received, total) {
           if (total > 0) setState(() => _progress = received / total);
@@ -113,12 +136,18 @@ class _FormatScreenState extends State<FormatScreen> {
         actionType: StringHelper.tagDownload,
       ));
 
-      if (widget.url.toLowerCase().contains('youtube.com') || widget.url.toLowerCase().contains('youtu.be')) {
-        final prefs = await SharedPreferences.getInstance();
+      if (widget.url.toLowerCase().contains('youtube.com') ||
+          widget.url.toLowerCase().contains('youtu.be')) {
+        const storage = FlutterSecureStorage();
         final today = DateTime.now().toIso8601String().split('T').first;
-        final count = prefs.getInt('yt_download_count_$today') ?? 0;
-        await prefs.setInt('yt_download_count_$today', count + 1);
+        final countStr = await storage.read(key: 'yt_download_count_$today');
+        final count = int.tryParse(countStr ?? '0') ?? 0;
+        await storage.write(
+            key: 'yt_download_count_$today', value: (count + 1).toString());
       }
+
+      final currentFormatKey = isAudio ? 'audio' : _selected?.formatId ?? '';
+      _downloadedFormats.add(currentFormatKey);
 
       if (!mounted) return;
       _showSuccessDialog(context);
@@ -155,7 +184,8 @@ class _FormatScreenState extends State<FormatScreen> {
             },
             color: Colors.white,
             height: 48,
-            child:  Text(StringHelper.viewHistory, style: const TextStyle(fontSize: 14)),
+            child: Text(StringHelper.viewHistory,
+                style: const TextStyle(fontSize: 14)),
           ),
         ),
         const SizedBox(width: 12),
@@ -166,7 +196,7 @@ class _FormatScreenState extends State<FormatScreen> {
             },
             color: NeuColors.accent,
             height: 48,
-            child:  Text(StringHelper.ok, style: const TextStyle(fontSize: 14)),
+            child: Text(StringHelper.ok, style: const TextStyle(fontSize: 14)),
           ),
         ),
       ],
@@ -179,102 +209,131 @@ class _FormatScreenState extends State<FormatScreen> {
     final Color textColor = isDark ? Colors.white : Colors.black;
 
     return ValueListenableBuilder<String>(
-      valueListenable: LanguageNotifier.languageCode,
-      builder: (context, lang, _) {
-        return Scaffold(
-          backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF0F0F0),
-          appBar: NeuAppBar(
-            title: StringHelper.appName,
-            leading: buildCircleIcon(Icons.arrow_back, () => Navigator.pop(context)),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
+        valueListenable: LanguageNotifier.languageCode,
+        builder: (context, lang, _) {
+          return Scaffold(
+            backgroundColor:
+                isDark ? const Color(0xFF121212) : const Color(0xFFF0F0F0),
+            appBar: NeuAppBar(
+              title: StringHelper.appName,
+              leading: buildCircleIcon(
+                  Icons.arrow_back, () => Navigator.pop(context)),
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.info.thumbnail != null)
+                          NeuContainer(
+                            padding: EdgeInsets.zero,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: widget.info.thumbnail!,
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ).animate().fadeIn().scale(curve: Curves.easeOutBack),
+                        const SizedBox(height: 16),
+                        Text(
+                          widget.info.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: textColor),
+                        ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
+                        Text(
+                          'from ${widget.info.extractor}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold),
+                        ).animate().fadeIn(delay: 300.ms),
+                        const SizedBox(height: 24),
+                        Text(StringHelper.videoQuality,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    color: textColor))
+                            .animate()
+                            .fadeIn(delay: 400.ms),
+                        const SizedBox(height: 12),
+                        Column(
+                          children: _videoFormats
+                              .map((f) => _buildFormatItem(f, textColor))
+                              .toList()
+                              .animate(interval: 50.ms)
+                              .fadeIn(delay: 500.ms)
+                              .slideY(begin: 0.1),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(StringHelper.audioQuality,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    color: textColor))
+                            .animate()
+                            .fadeIn(delay: 800.ms),
+                        const SizedBox(height: 12),
+                        _buildAudioItem(textColor)
+                            .animate()
+                            .fadeIn(delay: 900.ms)
+                            .slideY(begin: 0.1),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.info.thumbnail != null)
+                      if (_downloading) ...[
                         NeuContainer(
-                          padding: EdgeInsets.zero,
+                          padding: const EdgeInsets.all(4),
+                          borderRadius: 20,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.info.thumbnail!,
-                              height: 180,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(20),
+                            child: LinearProgressIndicator(
+                              value: _progress > 0 ? _progress : null,
+                              minHeight: 12,
+                              backgroundColor: Colors.white,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  NeuColors.primary),
                             ),
                           ),
-                        ).animate().fadeIn().scale(curve: Curves.easeOutBack),
-                      const SizedBox(height: 16),
-                      Text(
-                        widget.info.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor),
-                      ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
-                      Text(
-                        'from ${widget.info.extractor}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                      ).animate().fadeIn(delay: 300.ms),
-                      const SizedBox(height: 24),
-                      Text(StringHelper.videoQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
-                          .animate().fadeIn(delay: 400.ms),
-                      const SizedBox(height: 12),
-                      Column(
-                        children: _videoFormats.map((f) => _buildFormatItem(f, textColor)).toList()
-                          .animate(interval: 50.ms).fadeIn(delay: 500.ms).slideY(begin: 0.1),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(StringHelper.audioQuality, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: textColor))
-                          .animate().fadeIn(delay: 800.ms),
-                      const SizedBox(height: 12),
-                      _buildAudioItem(textColor).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
+                        ).animate().fadeIn().scaleY(),
+                        const SizedBox(height: 16),
+                      ],
+                      NeuButton(
+                        onTap: _downloading ? null : () => _handleDownload(),
+                        color: NeuColors.primary,
+                        child: Text(
+                          _downloading
+                              ? '${StringHelper.downloading}...'
+                              : (_audioSelected
+                                  ? '${StringHelper.downloadBtn} ${StringHelper.mp3}'
+                                  : '${StringHelper.downloadBtn} ${StringHelper.video}'),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 18),
+                        ),
+                      ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.2),
                     ],
                   ),
                 ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    if (_downloading) ...[
-                      NeuContainer(
-                        padding: const EdgeInsets.all(4),
-                        borderRadius: 20,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: LinearProgressIndicator(
-                            value: _progress > 0 ? _progress : null,
-                            minHeight: 12,
-                            backgroundColor: Colors.white,
-                            valueColor: const AlwaysStoppedAnimation<Color>(NeuColors.primary),
-                          ),
-                        ),
-                      ).animate().fadeIn().scaleY(),
-                      const SizedBox(height: 16),
-                    ],
-                    NeuButton(
-                      onTap: _downloading ? null : () => _handleDownload(),
-                      color: NeuColors.primary,
-                      child: Text(
-                        _downloading ? '${StringHelper.downloading}...' : (_audioSelected ? '${StringHelper.downloadBtn} ${StringHelper.mp3}' : '${StringHelper.downloadBtn} ${StringHelper.video}'),
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
-                      ),
-                    ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.2),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    );
+              ],
+            ),
+          );
+        });
   }
 
   Widget _buildFormatItem(VideoFormat f, Color textColor) {
@@ -291,15 +350,20 @@ class _FormatScreenState extends State<FormatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              Icon(Icons.play_circle_outline, color: isSelected ? Colors.black : Colors.grey),
+              Icon(Icons.play_circle_outline,
+                  color: isSelected ? Colors.black : Colors.grey),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   '${f.resolution} · ${f.ext.toUpperCase()}',
-                  style: TextStyle(fontWeight: FontWeight.w900, color: isSelected ? Colors.black : textColor),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: isSelected ? Colors.black : textColor),
                 ),
               ),
-              Text(f.sizeLabel, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+              Text(f.sizeLabel,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.grey)),
             ],
           ),
         ),
@@ -314,19 +378,26 @@ class _FormatScreenState extends State<FormatScreen> {
         _audioSelected = true;
       }),
       child: NeuContainer(
-        color: _audioSelected ? NeuColors.secondary : null, // respects theme if null
+        color: _audioSelected
+            ? NeuColors.secondary
+            : null, // respects theme if null
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(Icons.music_note, color: _audioSelected ? Colors.black : Colors.grey),
+            Icon(Icons.music_note,
+                color: _audioSelected ? Colors.black : Colors.grey),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 StringHelper.highQualityMP3,
-                style: TextStyle(fontWeight: FontWeight.w900, color: _audioSelected ? Colors.black : textColor),
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: _audioSelected ? Colors.black : textColor),
               ),
             ),
-             Text(StringHelper.audioOnly, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+            Text(StringHelper.audioOnly,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.grey)),
           ],
         ),
       ),

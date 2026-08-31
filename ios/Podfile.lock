@@ -41,6 +41,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_native_video_trimmer (1.0.0):
     - Flutter
+  - flutter_secure_storage_darwin (10.0.0):
+    - Flutter
+    - FlutterMacOS
   - gallery_saver_plus (0.0.1):
     - Flutter
   - get_thumbnail_video (0.0.1):
@@ -93,6 +96,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_native_video_trimmer (from `.symlinks/plugins/flutter_native_video_trimmer/ios`)
+  - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - gallery_saver_plus (from `.symlinks/plugins/gallery_saver_plus/ios`)
   - get_thumbnail_video (from `.symlinks/plugins/get_thumbnail_video/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
@@ -123,6 +127,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_native_video_trimmer:
     :path: ".symlinks/plugins/flutter_native_video_trimmer/ios"
+  flutter_secure_storage_darwin:
+    :path: ".symlinks/plugins/flutter_secure_storage_darwin/darwin"
   gallery_saver_plus:
     :path: ".symlinks/plugins/gallery_saver_plus/ios"
   get_thumbnail_video:
@@ -151,6 +157,7 @@ SPEC CHECKSUMS:
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_native_video_trimmer: 11f6c679971dc3844519b485b9c878df8675ae3a
+  flutter_secure_storage_darwin: acdb3f316ed05a3e68f856e0353b133eec373a23
   gallery_saver_plus: 61c8a831d5975e2bf57f87bcd64379dcc7d29ff2
   get_thumbnail_video: 1a754d46b860dffefcc57b7290a43089cd5d7e58
   Google-Mobile-Ads-SDK: cec761d0da669c462bcc19cd16c747498b9f39f7
