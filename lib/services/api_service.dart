@@ -2,13 +2,7 @@ import 'package:dio/dio.dart';
 import '../models/video_info.dart';
 
 class ApiService {
-  // 👉 Change this to your backend's address.
-  // - Android emulator -> http://10.0.2.2:4000
-  // - iOS simulator    -> http://localhost:4000
-  // - Physical phone   -> http://<your-computer-local-ip>:4000
-  // - Production       -> https://your-deployed-backend.com
-  // static const String baseUrl = 'http://10.0.2.2:4000'; // For Android Emulator
-  static const String baseUrl = 'https://quicksave-backend-wq7x.onrender.com'; // For Physical Phone
+  static const String baseUrl = 'https://quicksave-backend-wq7x.onrender.com';
   // static const String baseUrl = 'http://localhost:4000'; // For iOS Simulator
 
   final Dio _dio = Dio(

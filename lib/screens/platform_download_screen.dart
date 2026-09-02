@@ -69,8 +69,8 @@ class _PlatformDownloadScreenState extends State<PlatformDownloadScreen> {
             lowerUrl.contains('fb.com'))) {
       return true;
     }
-    if (widget.platformName == 'YouTube' &&
-        (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be'))) {
+    if (widget.platformName == 'X' &&
+        (lowerUrl.contains('x.com') || lowerUrl.contains('twitter.com'))) {
       return true;
     }
     if (widget.platformName == 'TikTok' && (lowerUrl.contains('tiktok.com') ||
@@ -94,15 +94,7 @@ class _PlatformDownloadScreenState extends State<PlatformDownloadScreen> {
       return;
     }
 
-    if (widget.platformName == 'YouTube') {
-      final today = DateTime.now().toIso8601String().split('T').first;
-      final countStr = await _storage.read(key: 'yt_download_count_$today');
-      final count = int.tryParse(countStr ?? '0') ?? 0;
-      if (count >= 2) {
-        _showAlert('Daily Limit Reached', 'You can only download 2 YouTube videos per day.');
-        return;
-      }
-    }
+    // Removed YouTube limit check for X
 
     setState(() => _loading = true);
     try {

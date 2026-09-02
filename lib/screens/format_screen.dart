@@ -61,18 +61,7 @@ class _FormatScreenState extends State<FormatScreen> {
       return;
     }
 
-    final lowerUrl = widget.url.toLowerCase();
-    if (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be')) {
-      const storage = FlutterSecureStorage();
-      final today = DateTime.now().toIso8601String().split('T').first;
-      final countStr = await storage.read(key: 'yt_download_count_$today');
-      final count = int.tryParse(countStr ?? '0') ?? 0;
-      if (count >= 2) {
-        _showAlert(
-            'Daily Limit Reached\nYou can only download 2 YouTube videos per day.');
-        return;
-      }
-    }
+    // Removed YouTube limit check for X
 
     // Show Interstitial Ad before starting the process
     await AdService.showInterstitialAd(
@@ -136,15 +125,7 @@ class _FormatScreenState extends State<FormatScreen> {
         actionType: StringHelper.tagDownload,
       ));
 
-      if (widget.url.toLowerCase().contains('youtube.com') ||
-          widget.url.toLowerCase().contains('youtu.be')) {
-        const storage = FlutterSecureStorage();
-        final today = DateTime.now().toIso8601String().split('T').first;
-        final countStr = await storage.read(key: 'yt_download_count_$today');
-        final count = int.tryParse(countStr ?? '0') ?? 0;
-        await storage.write(
-            key: 'yt_download_count_$today', value: (count + 1).toString());
-      }
+      // Removed YouTube limit increment for X
 
       final currentFormatKey = isAudio ? 'audio' : _selected?.formatId ?? '';
       _downloadedFormats.add(currentFormatKey);

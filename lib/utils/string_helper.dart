@@ -32,7 +32,7 @@ class StringHelper {
   static String get instagram => 'Instagram';
   static String get facebook => 'Facebook';
   static String get tiktok => 'TikTok';
-  static String get youtube => 'YouTube';
+  static String get x => 'X';
   static String get other => _get('other');
 
   // Tools

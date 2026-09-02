@@ -55,15 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final lowerUrl = url.toLowerCase();
-    if (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be')) {
-      final today = DateTime.now().toIso8601String().split('T').first;
-      final countStr = await _storage.read(key: 'yt_download_count_$today');
-      final count = int.tryParse(countStr ?? '0') ?? 0;
-      if (count >= 2) {
-        _showAlert('Daily Limit Reached', 'You can only download 2 YouTube videos per day.');
-        return;
-      }
-    }
 
     setState(() => _loading = true);
     try {
@@ -181,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(child: _buildPlatformItem(StringHelper.instagram, Icons.camera_rounded, const Color(0xFFFF80AB), textColor, 0)),
                         Expanded(child: _buildPlatformItem(StringHelper.facebook, Icons.facebook_rounded, const Color(0xFF82B1FF), textColor, 100)),
                         Expanded(child: _buildPlatformItem(StringHelper.tiktok, Icons.music_note, const Color(0xFF5E5D5D), textColor, 200)),
-                        Expanded(child: _buildPlatformItem(StringHelper.youtube, Icons.play_arrow_rounded, const Color(0xFFFF5252), textColor, 300)),
+                        Expanded(child: _buildPlatformItem(StringHelper.x, Icons.close, Colors.white, textColor, 300)),
                         Expanded(child: _buildPlatformItem(StringHelper.other, Icons.grid_view_rounded, const Color(0xFFB2FF59), textColor, 400)),
                       ],
                     ),
